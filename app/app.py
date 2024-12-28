@@ -5,17 +5,15 @@ import pandas as pd
 
 st.markdown("""# Black-Scholes Pricing Model""")
 
-import streamlit as st
-
 # Sidebar inputs
 st.sidebar.header("Option Pricing Parameters")
 
-#REMOVE min and max value parameters
-S_0 = st.sidebar.number_input("Initial Spot Price (S_0)", min_value=0.0, value=100.0, step=1.0)
-K = st.sidebar.number_input("Strike Price (K)", min_value=0.0, value=100.0, step=1.0)
-r = st.sidebar.number_input("Risk-Free Rate (r)", min_value=0.0, max_value=1.0, value=0.1, step=0.01)
-time = st.sidebar.number_input("Time to Expiration (time)", min_value=0.0, value=1.0, step=0.1)
-sigma = st.sidebar.number_input("Annual Volatility (sigma)", min_value=0.0, max_value=1.0, value=0.3, step=0.01)
+S_0 = st.sidebar.number_input("Initial Spot Price (S_0)", value=100.0, step=1.0)
+K = st.sidebar.number_input("Strike Price (K)", value=100.0, step=1.0)
+r = st.sidebar.number_input("Risk-Free Rate (r)", value=0.1, step=0.01)
+time = st.sidebar.number_input("Time to Expiration (time)", value=1.0, step=0.1)
+sigma = st.sidebar.number_input("Annual Volatility (sigma)", value=0.3, step=0.01)
+
 
 # Display the entered values in the main app area
 st.write("### Option Features")
