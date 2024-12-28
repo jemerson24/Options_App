@@ -24,9 +24,11 @@ def BS_Put(S, K, T, r, sigma):
     # BS Put Formula no dividends
     return K * np.exp(-r * T) * N(-d2) - S * N(-d1)
 
-# Call Statement Example
-# Put_est = BS_Put(S_0, K, time, r, sigma)
+# Wrapper function to compute and return a single call price
+def get_put_price(S_0, K, time, r, sigma):
+    return BS_Put(S_0, K, time, r, sigma)
 
+# Generate and plot put prices
 def generate_and_plot_put_prices(S_0, sigma, K, time, r, spot_range=50, volatility_range=0.1, num_points=10):
     # Generate ranges for spot prices and volatilities
     spot_prices = np.linspace(S_0 - spot_range, S_0 + spot_range, num_points)  # Range around S_0
@@ -42,11 +44,11 @@ def generate_and_plot_put_prices(S_0, sigma, K, time, r, spot_range=50, volatili
     
     # Plot the heatmap using seaborn
     plt.figure(figsize=(10, 8))
-    ax = sns.heatmap(put_prices, 
-                     xticklabels=np.round(spot_prices, 2), 
-                     yticklabels=np.round(volatilities, 2), 
-                     cmap='viridis', cbar_kws={'label': 'Put Price'},
-                     annot=True, fmt=".2f")  # Show values in each cell
+    put_heatmap = sns.heatmap(put_prices, 
+                              xticklabels=np.round(spot_prices, 2), 
+                              yticklabels=np.round(volatilities, 2), 
+                              cmap='viridis', cbar_kws={'label': 'Put Price'},
+                              annot=True, fmt=".2f")  # Show values in each cell
     plt.title('Black-Scholes Put Price Matrix')
     plt.xlabel('Spot Price')
     plt.ylabel('Volatility')
@@ -55,4 +57,5 @@ def generate_and_plot_put_prices(S_0, sigma, K, time, r, spot_range=50, volatili
     # Create and return DataFrame of the put prices
     puts_df = pd.DataFrame(put_prices, columns=np.round(spot_prices, 2), index=np.round(volatilities, 2))
     
-    return puts_df
+    return puts_df, put_heatmap
+
