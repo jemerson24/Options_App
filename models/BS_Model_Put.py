@@ -4,35 +4,24 @@ from scipy.stats import norm
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# # #Define Variables
-
-# S_0 = 100  # Initial spot price
-# K = 100  # Strike price
-# r = 0.1  # Risk-free rate
-# time = 1  # Time until option expiration
-# sigma = 0.3  # Annual volatility of asset's return
-
-#Define cumuliative distribution formula for BS_CALL and BS_PUT
+# Define the cumulative distribution formula for BS_Put
 N = norm.cdf
 
 # Black-Scholes Put Formula Function
 def BS_Put(S, K, T, r, sigma):
-    # d1 adjusts for expected stock price if option is exercised
     d1 = (np.log(S / K) + (r + sigma**2 / 2) * T) / (sigma * np.sqrt(T))
-    # d2 is probability the option will expire in the money
     d2 = d1 - sigma * np.sqrt(T)
-    # BS Put Formula no dividends
     return K * np.exp(-r * T) * N(-d2) - S * N(-d1)
 
-# Wrapper function to compute and return a single call price
+# Wrapper function to compute and return a single put price
 def get_put_price(S_0, K, time, r, sigma):
     return BS_Put(S_0, K, time, r, sigma)
 
-# Generate and plot put prices
-def generate_and_plot_put_prices(S_0, sigma, K, time, r, spot_range=50, volatility_range=0.1, num_points=10):
-    # Generate ranges for spot prices and volatilities
-    spot_prices = np.linspace(S_0 - spot_range, S_0 + spot_range, num_points)  # Range around S_0
-    volatilities = np.linspace(sigma - volatility_range, sigma + volatility_range, num_points)  # Range around sigma
+# Generate and plot put prices with new min/max for spot price and volatility
+def generate_and_plot_put_prices(S_0, sigma, K, time, r, min_spot, max_spot, min_volatility, max_volatility, num_points=10):
+    # Generate ranges for spot prices and volatilities based on the provided min/max values
+    spot_prices = np.linspace(min_spot, max_spot, num_points)  # Range between min and max spot prices
+    volatilities = np.linspace(min_volatility, max_volatility, num_points)  # Range between min and max volatilities
 
     # Create a 2D array for put prices
     put_prices = np.zeros((len(volatilities), len(spot_prices)))
@@ -42,12 +31,12 @@ def generate_and_plot_put_prices(S_0, sigma, K, time, r, spot_range=50, volatili
         for j, spot in enumerate(spot_prices):
             put_prices[i, j] = BS_Put(spot, K, time, r, vol)
     
-    # Plot the heatmap using seaborn
+    # Plot the heatmap using seaborn with red-to-green color map
     plt.figure(figsize=(10, 8))
     put_heatmap = sns.heatmap(put_prices, 
                               xticklabels=np.round(spot_prices, 2), 
                               yticklabels=np.round(volatilities, 2), 
-                              cmap='viridis', cbar_kws={'label': 'Put Price'},
+                              cmap='RdYlGn', cbar_kws={'label': 'Put Price'},
                               annot=True, fmt=".2f")  # Show values in each cell
     plt.title('Black-Scholes Put Price Matrix')
     plt.xlabel('Spot Price')
@@ -58,4 +47,3 @@ def generate_and_plot_put_prices(S_0, sigma, K, time, r, spot_range=50, volatili
     puts_df = pd.DataFrame(put_prices, columns=np.round(spot_prices, 2), index=np.round(volatilities, 2))
     
     return puts_df, put_heatmap
-

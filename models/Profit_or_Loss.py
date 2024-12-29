@@ -26,4 +26,3 @@ def plot_profit_or_loss_heatmap(option_prices, market_prices, spot_prices, volat
     # Create and return a DataFrame of the profit or loss
     pnl_df = pd.DataFrame(pnl, columns=np.round(spot_prices, 2), index=np.round(volatilities, 2))
     return pnl_df, pnl_heatmap
-
